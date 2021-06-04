@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import time
 
 
 def auto_categorize(path, categories):
@@ -25,7 +26,7 @@ def auto_categorize(path, categories):
 
             # If none of the cat suits us --> others folder
             if cnt == len(categories.keys())-1:
-                print((extension, list(categories.keys())[-1]))
+                print((time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),extension, list(categories.keys())[-1]))
                 try:
                     cat_not_found(path, file)
                 except shutil.Error:
@@ -34,12 +35,13 @@ def auto_categorize(path, categories):
             cnt += 1
             # If we match the cat
             if extension in value:
-                print((extension, key))
+                print((time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),extension, key))
                 try:
                     cat_found(path, file, key)
                 except shutil.Error:
                     continue
                 break
+
 
 def cat_not_found(path, file):
     source = path + '/' + file
