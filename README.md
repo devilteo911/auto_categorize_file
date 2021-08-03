@@ -1,5 +1,5 @@
 # Auto categorize your files
-Simple script that, based on some hardcoded categorize, can clean up the folder you desire.
+Simple script that, based on some hardcoded categories, can clean up the folder you desire.
 
 ## Installation 
 > clone the repo
