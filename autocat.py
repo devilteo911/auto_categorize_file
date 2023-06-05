@@ -2,56 +2,41 @@
 
 import os
 import shutil
-import time
 
 
 def auto_categorize(path, categories):
-    for file in os.listdir(path):
-        # Useful for "unknown" ext
-        cnt = 0
+    for file_ in os.listdir(path):
         # Checking the extension
-        extension = '.' + file.split('.')[-1]
+        extension = '.' + file_.split('.')[-1]
 
         # I only want files, not folders
-        if '.' not in file or os.path.isdir(path + '/' + file) != False:  
-            #print((file, 'folder'))
+        if '.' not in file_ or os.path.isdir(path + '/' + file_):  
+            #print((file_, 'folder'))
             continue
 
+        has_category = False
         # Looping through the categories
-        for i in range(len(categories.keys())):
-            # Taking the current key and value
-            key = list(categories.keys())[i]
-            value = list(categories.values())[i]
-            #print(key, value, extension)
-
-            # If none of the cat suits us --> others folder
-            if cnt == len(categories.keys())-1:
-                print((time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),extension, list(categories.keys())[-1]))
-                try:
-                    cat_not_found(path, file)
-                except shutil.Error:
-                    continue
+        for k, v in categories.items():
+            if has_category:
                 break
-            cnt += 1
-            # If we match the cat
-            if extension in value:
-                print((time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),extension, key))
-                try:
-                    cat_found(path, file, key)
-                except shutil.Error:
-                    continue
-                break
+            if extension in v:
+                cat_found(path, file_, k)
+                has_category = True
+
+        if not has_category:
+            cat_not_found(path, file_)
+        
 
 
-def cat_not_found(path, file):
-    source = path + '/' + file
+def cat_not_found(path, file_):
+    source = path + '/' + file_
     destination = path + '/' + 'others'
     if not os.path.exists(path + '/' + 'others'):
         os.mkdir(path + '/' + 'others')
     return shutil.move(source, destination)
 
-def cat_found(path, file, key):
-    source = path + '/' + file
+def cat_found(path, file_, key):
+    source = path + '/' + file_
     destination = path + '/' + key
     # Create the folder if not present
     if not os.path.exists(path + '/' + key):
@@ -67,14 +52,15 @@ cats = {'scripts':['.py', '.ipy', '.ipynb', '.java','.json'],
         'videos':['.mp4', '.avi','.mpeg'], 
         'archives':['.zip', '.tar','.tar.bz2','.tar.gz','.rar','.7z','.gz','.tgz'],
         'music':['.mp3','.flac','.wav'],
-        'docs':['.doc','.docx','.xlsx','.xls','.txt','.pptx','odt'],
-        'others':[]}
+        'docs':['.doc','.docx','.xlsx','.xls','.txt','.pptx','odt']}
 
 #print(cats.values())
-test_path = "C:\\Users\\Matteo\\Downloads" if os.name == 'nt' else '/home/devilteo911/Downloads'
-#print(auto_categorize(test_path, cats))
+test_path = "C:\\Users\\matte\\Downloads\\aaa" if os.name == 'nt' else '/home/devilteo911/Downloads/aaa'
+
+def main(*args):
+    auto_categorize(test_path, cats)
 
 # Infinite loop to keep alive the service
 if __name__ == '__main__':
     while True:
-        auto_categorize(test_path, cats)
+        main()
